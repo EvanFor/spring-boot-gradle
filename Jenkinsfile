@@ -27,7 +27,7 @@ podTemplate(
         label: label,
         cloud: 'kubernetes',
         containers: [
-                containerTemplate(name: 'gradle', image: 'gradle:jdk17', command: 'cat', ttyEnabled: true),
+                containerTemplate(name: 'gradle', image: 'gradle:jdk17-alpine', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'kubectl', image: 'cnych/kubectl', command: 'cat', ttyEnabled: true)
         ],
@@ -56,6 +56,10 @@ podTemplate(
 
         stage('Gradle Build') {
           echo "-----> Gradle start <-----"
+           sh 'apk add nodejs=18.17.0-r0'
+           sh 'apk add npm=9.6.6-r0'
+           sh 'node -v'
+           sh 'npm -v'
           container('gradle') {
               sh 'gradle build --stacktrace'
           }
