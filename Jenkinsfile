@@ -16,8 +16,6 @@ properties([
 
 environment {
     BRANCH = "$params.BRANCH"
-    APP_NAME = "spring-boot-gradle"
-    NAMESPACE = "dev"
 }
 
 def GIT_REPO = 'https://github.com/EvanFor/spring-boot-gradle.git'
@@ -50,6 +48,8 @@ podTemplate(
             git branch: "${env.BRANCH}", changelog: true, credentialsId: "github", url: "${GIT_REPO}"
 
             env.GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+            env.APP_NAME = "spring-boot-gradle"
+            env.NAMESPACE = "dev"
             echo "GIT_COMMIT     信息为：${env.GIT_COMMIT}"
             echo "-----> Git end   <-----"
         }
@@ -85,9 +85,6 @@ podTemplate(
                 withKubeConfig([credentialsId: "k8s-credentials", serverUrl: "https://kubernetes.default.svc.cluster.local"]) {
                     unstash("k8s.yaml")
                     sh 'kubectl apply -f k8s.yaml'
-                    sh "kubectl get pod -n ${env.ENV}"
-                    sh "kubectl get svc -n ${env.ENV}"
-                    sh "kubectl get ing -n ${env.ENV}"
                 }
             }
             echo "-----> Kubectl end <-----"
