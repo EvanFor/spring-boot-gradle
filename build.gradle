@@ -19,3 +19,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.ruran.SpringBootGradleApplication'
+    }
+}
+
